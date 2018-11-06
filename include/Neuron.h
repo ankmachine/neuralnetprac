@@ -10,6 +10,19 @@
 #ifndef NEURON_H
 #define NEURON_H
 
-class Neuron {};
+#include <vector>
+#include "./Connection.h"
+#include <cstdlib>
+
+class Neuron {
+    public :
+        Neuron(unsigned numOutputs);
+        void feedForward(Layer &pervLayer);
+
+    private :
+        static double randomWeight(void){ return rand()/double(RAND_MAX); }
+        double m_outputVal;
+        std::vector<Connection> m_outputWeights;
+};
 
 #endif
