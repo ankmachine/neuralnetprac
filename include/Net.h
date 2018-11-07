@@ -12,8 +12,7 @@
 
 #include <vector>
 #include "./Neuron.h"
-
-typedef std::vector<Neuron> Layer;
+#include "./Common.h"
 
 class Net
 {

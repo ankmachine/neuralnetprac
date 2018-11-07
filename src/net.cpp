@@ -3,8 +3,7 @@
 #include "../include/Neuron.h"
 #include <iostream>
 #include <cassert>
-
-typedef std::vector<Neuron> Layer;
+#include "../include/Common.h"
 
 void Net::feedForward(const std::vector<double> &inputVals){
     // checking if number of input value equal to number of neuron
@@ -23,7 +22,7 @@ void Net::feedForward(const std::vector<double> &inputVals){
     for(unsigned layerNum = 1; layerNum < m_layers.size(); ++layerNum){
         Layer &pervLayer = m_layers[layerNum-1];
         // inner loop for each neuron, because bias neuron there will be -1
-        for (unsigned neur = 0; neur < m_layers[layerNum]-1; ++neur){
+        for (unsigned neur = 0; neur < m_layers[layerNum].size()-1; ++neur){
    
             // class net will loop and set value
             // class neuron does the maths
@@ -51,7 +50,7 @@ Net::Net(const std::vector<unsigned> &topology)
             for(unsigned neuronNum=0; neuronNum <= topology[layerNum]; ++neuronNum)
             {
                 // start here
-                m_layers.back().push_back(Neuron(numOutputs));
+                m_layers.back().push_back(Neuron(numOutputs, neuronNum));
                 std::cout << "made a neuron !!" << std::endl;
             }
         }
