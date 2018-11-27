@@ -5,6 +5,48 @@
 #include <cassert>
 #include "../include/Common.h"
 
+void Net::backProp(const std::vector<double> &targetVals){
+
+// calculate overall net error (RMS of output error of neuron)
+    Layer &outputLayer = m_layer.back();
+    m_error =  0.0;
+    for(unsigned n = 0; n < outputLayer.size() - 1; ++n)
+    {
+        double delta = targetVals[n] - outputLayer[n].getOutputVal();
+        m_error += delta * delta; // square of delta 
+    }
+    m_error /= outputLayer.size() - 1; // get avg error squared
+    m_error = sqrt( m_error ); // root mean square
+
+// implement a recent avg measurement
+
+    m_recentAverageError = (m_recentAverageError * m_recentAverageSmoothingFactor + m_error)
+                            / (m_recentAverageSmoothingFactor + 1.0);
+
+// calculate output layer gradient
+
+    for(unsigned n = 0; n < outputLayer.size() - 1; ++n){
+        outputLayer.calcOutputGradients(targetVals[n]);
+    } 
+
+// calculate gradients on hidden layers
+
+    for(usigned layerNum = m_layers[0].size()-2; layerNum > 0; --layerNum)
+    {
+        Layer &hiddenLayer = m_layers[layerNum];
+        layer &nextLayer = m_layers[layerNum + 1];
+        
+        for (unsigned n = 0; n < hiddenLayer.size(); ++n)
+        {
+            hiddenLayer[n].calcHiddenGradients(nextLayer);
+        }
+    }
+
+// for all the outputs to first hidden layer
+// and update the connection weights
+
+}
+
 void Net::feedForward(const std::vector<double> &inputVals){
     // checking if number of input value equal to number of neuron
     assert(inputVals.size() == m_layers[0].size() - 1);
