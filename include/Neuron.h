@@ -21,14 +21,21 @@ class Neuron {
         void setOutputVal(double val){m_outputVal = val;}
         double getOutputVal(void) const {return m_outputVal;}
         void feedForward(const Layer &pervLayer);
+        void calcOutputGradients(double targetVal);
+        void calcHiddenGradients(const Layer &nextLayer);
+        void updateInputWeights(Layer &prevLayer);
 
     private :
+        static double eta;
+        static double alpha;
         static double transferFunction(double x);
         static double transferFunctionDerivative(double x);
         static double randomWeight(void){ return rand()/double(RAND_MAX); }
+        double sumDow(const Layer &nextLayer) const;
         double m_outputVal;
         std::vector<Connection> m_outputWeights;
         unsigned m_myIndex ;
+        double m_gradient;
 };
 
 #endif

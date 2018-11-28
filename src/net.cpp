@@ -6,6 +6,17 @@
 #include <cmath>
 #include "../include/Common.h"
 
+
+void Net::getResults(std::vector<double> &resultVals) const
+{
+    resultVals.clear();
+    for(unsigned n =0; n < m_layers.back().size()-1; ++n)
+    {
+       resultVals.push_back(m_layers.back()[n].getOutputVal());
+    }
+} 
+
+
 void Net::backProp(const std::vector<double> &targetVals){
 
 // calculate overall net error (RMS of output error of neuron)
@@ -27,7 +38,7 @@ void Net::backProp(const std::vector<double> &targetVals){
 // calculate output layer gradient
 
     for(unsigned n = 0; n < outputLayer.size() - 1; ++n){
-        outputLayer.calcOutputGradients(targetVals[n]);
+        outputLayer[n].calcOutputGradients(targetVals[n]);
     } 
 
 // calculate gradients on hidden layers
@@ -45,6 +56,18 @@ void Net::backProp(const std::vector<double> &targetVals){
 
 // for all the outputs to first hidden layer
 // and update the connection weights
+
+    for(unsigned layerNum = m_layers[0].size() - 1; layerNum > 0; --layerNum)
+    {
+        Layer &layer = m_layers[layerNum];
+        Layer &prevLayer = m_layers[layerNum -1];
+        
+        for (unsigned n = 0; n < layer.size(); ++n)
+        {
+            layer[n].updateInputWeights(prevLayer);
+        }
+    }
+
 
 }
 
@@ -96,6 +119,7 @@ Net::Net(const std::vector<unsigned> &topology)
                 m_layers.back().push_back(Neuron(numOutputs, neuronNum));
                 std::cout << "made a neuron !!" << std::endl;
             }
+            m_layers.back().back().setOutputVal(1.0);
         }
 }
 
