@@ -3,12 +3,13 @@
 #include "../include/Neuron.h"
 #include <iostream>
 #include <cassert>
+#include <cmath>
 #include "../include/Common.h"
 
 void Net::backProp(const std::vector<double> &targetVals){
 
 // calculate overall net error (RMS of output error of neuron)
-    Layer &outputLayer = m_layer.back();
+    Layer &outputLayer = m_layers.back();
     m_error =  0.0;
     for(unsigned n = 0; n < outputLayer.size() - 1; ++n)
     {
@@ -31,10 +32,10 @@ void Net::backProp(const std::vector<double> &targetVals){
 
 // calculate gradients on hidden layers
 
-    for(usigned layerNum = m_layers[0].size()-2; layerNum > 0; --layerNum)
+    for(unsigned layerNum = m_layers[0].size()-2; layerNum > 0; --layerNum)
     {
         Layer &hiddenLayer = m_layers[layerNum];
-        layer &nextLayer = m_layers[layerNum + 1];
+        Layer &nextLayer = m_layers[layerNum + 1];
         
         for (unsigned n = 0; n < hiddenLayer.size(); ++n)
         {
